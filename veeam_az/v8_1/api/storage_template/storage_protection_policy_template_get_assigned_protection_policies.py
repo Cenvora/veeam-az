@@ -1,0 +1,190 @@
+from http import HTTPStatus
+from typing import Any
+from urllib.parse import quote
+from uuid import UUID
+
+import httpx
+
+from ... import errors
+from ...client import AuthenticatedClient, Client
+from ...models.page_of_storage_template_assignment import PageOfStorageTemplateAssignment
+from ...models.problem_details_400 import ProblemDetails400
+from ...models.problem_details_401 import ProblemDetails401
+from ...models.problem_details_403 import ProblemDetails403
+from ...types import Response
+
+
+def _get_kwargs(
+    template_id: UUID,
+) -> dict[str, Any]:
+
+    _kwargs: dict[str, Any] = {
+        "method": "get",
+        "url": "/api/v8.1/policyTemplates/storageTemplate/{template_id}/assignedProtectionPolicies".format(
+            template_id=quote(str(template_id), safe=""),
+        ),
+    }
+
+    return _kwargs
+
+
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403 | None:
+    if response.status_code == 200:
+        response_200 = PageOfStorageTemplateAssignment.from_dict(response.json())
+
+        return response_200
+
+    if response.status_code == 400:
+        response_400 = ProblemDetails400.from_dict(response.json())
+
+        return response_400
+
+    if response.status_code == 401:
+        response_401 = ProblemDetails401.from_dict(response.json())
+
+        return response_401
+
+    if response.status_code == 403:
+        response_403 = ProblemDetails403.from_dict(response.json())
+
+        return response_403
+
+    if client.raise_on_unexpected_status:
+        raise errors.UnexpectedStatus(response.status_code, response.content)
+    else:
+        return None
+
+
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403]:
+    return Response(
+        status_code=HTTPStatus(response.status_code),
+        content=response.content,
+        headers=response.headers,
+        parsed=_parse_response(client=client, response=response),
+    )
+
+
+def sync_detailed(
+    template_id: UUID,
+    *,
+    client: AuthenticatedClient | Client,
+) -> Response[PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403]:
+    """Get Policies That Have Storage Template Assigned
+
+     The HTTP GET request to the
+    `/policyTemplates/storageTemplate/{templateId}/assignedProtectionPolicies` endpoint retrieves a list
+    of SLA-based backup policies that have the specified storage template assigned.
+
+    Args:
+        template_id (UUID):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403]
+    """
+
+    kwargs = _get_kwargs(
+        template_id=template_id,
+    )
+
+    response = client.get_httpx_client().request(
+        **kwargs,
+    )
+
+    return _build_response(client=client, response=response)
+
+
+def sync(
+    template_id: UUID,
+    *,
+    client: AuthenticatedClient | Client,
+) -> PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403 | None:
+    """Get Policies That Have Storage Template Assigned
+
+     The HTTP GET request to the
+    `/policyTemplates/storageTemplate/{templateId}/assignedProtectionPolicies` endpoint retrieves a list
+    of SLA-based backup policies that have the specified storage template assigned.
+
+    Args:
+        template_id (UUID):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403
+    """
+
+    return sync_detailed(
+        template_id=template_id,
+        client=client,
+    ).parsed
+
+
+async def asyncio_detailed(
+    template_id: UUID,
+    *,
+    client: AuthenticatedClient | Client,
+) -> Response[PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403]:
+    """Get Policies That Have Storage Template Assigned
+
+     The HTTP GET request to the
+    `/policyTemplates/storageTemplate/{templateId}/assignedProtectionPolicies` endpoint retrieves a list
+    of SLA-based backup policies that have the specified storage template assigned.
+
+    Args:
+        template_id (UUID):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403]
+    """
+
+    kwargs = _get_kwargs(
+        template_id=template_id,
+    )
+
+    response = await client.get_async_httpx_client().request(**kwargs)
+
+    return _build_response(client=client, response=response)
+
+
+async def asyncio(
+    template_id: UUID,
+    *,
+    client: AuthenticatedClient | Client,
+) -> PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403 | None:
+    """Get Policies That Have Storage Template Assigned
+
+     The HTTP GET request to the
+    `/policyTemplates/storageTemplate/{templateId}/assignedProtectionPolicies` endpoint retrieves a list
+    of SLA-based backup policies that have the specified storage template assigned.
+
+    Args:
+        template_id (UUID):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        PageOfStorageTemplateAssignment | ProblemDetails400 | ProblemDetails401 | ProblemDetails403
+    """
+
+    return (
+        await asyncio_detailed(
+            template_id=template_id,
+            client=client,
+        )
+    ).parsed

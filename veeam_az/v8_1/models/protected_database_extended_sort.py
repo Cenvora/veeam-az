@@ -1,0 +1,41 @@
+from enum import Enum
+
+
+class ProtectedDatabaseExtendedSort(str, Enum):
+    ARCHIVESIZEASC = "ArchiveSizeAsc"
+    ARCHIVESIZEDESC = "ArchiveSizeDesc"
+    BACKUPSIZEASC = "BackupSizeAsc"
+    BACKUPSIZEDESC = "BackupSizeDesc"
+    DATARETRIEVALSTATUSASC = "DataRetrievalStatusAsc"
+    DATARETRIEVALSTATUSDESC = "DataRetrievalStatusDesc"
+    IDASC = "IdAsc"
+    IDDESC = "IdDesc"
+    LASTBACKUPASC = "LastBackupAsc"
+    LASTBACKUPDESC = "LastBackupDesc"
+    NAMEASC = "NameAsc"
+    NAMEDESC = "NameDesc"
+    POLICYASC = "PolicyAsc"
+    POLICYDESC = "PolicyDesc"
+    REGIONASC = "RegionAsc"
+    REGIONDESC = "RegionDesc"
+    REPOSITORYNAMEASC = "RepositoryNameAsc"
+    REPOSITORYNAMEDESC = "RepositoryNameDesc"
+    RESOURCEGROUPASC = "ResourceGroupAsc"
+    RESOURCEGROUPDESC = "ResourceGroupDesc"
+    RESTOREPOINTCOUNTASC = "RestorePointCountAsc"
+    RESTOREPOINTCOUNTDESC = "RestorePointCountDesc"
+    SERVERNAMEASC = "ServerNameAsc"
+    SERVERNAMEDESC = "ServerNameDesc"
+    SIZEASC = "SizeAsc"
+    SIZEDESC = "SizeDesc"
+    SQLELASTICPOOLASC = "SqlElasticPoolAsc"
+    SQLELASTICPOOLDESC = "SqlElasticPoolDesc"
+    SUBSCRIPTIONIDASC = "SubscriptionIdAsc"
+    SUBSCRIPTIONIDDESC = "SubscriptionIdDesc"
+    SUBSCRIPTIONNAMEASC = "SubscriptionNameAsc"
+    SUBSCRIPTIONNAMEDESC = "SubscriptionNameDesc"
+    TENANTIDASC = "TenantIdAsc"
+    TENANTIDDESC = "TenantIdDesc"
+
+    def __str__(self) -> str:
+        return str(self.value)
