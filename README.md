@@ -46,7 +46,7 @@ This project is an independent, open source Python client for the Veeam Backup f
 3. Run `python fix_openapi_schema.py .\openapi_schemas\vbaz_rest_{version}.json .\openapi_schemas\vbaz_rest_{version}_fixed.json` 
 4. Run `openapi-python-client generate --path ".\openapi_schemas\vbaz_rest_{version}_fixed.json" --output-path ".\veeam_az" --overwrite`
 5. Fix any warnings/errors
-6. Rename the folder to match the API version (i.e., `v8.1`)
+6. Rename the folder to match the API version (i.e., `v8_1`)
 7. Add the version mapping to versions.py
 8. Write pytest tests
 9. If an older API has been deprecated, delete its folder, json, and version.py entry, then update the supported versions section of the readme
