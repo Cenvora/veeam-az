@@ -111,6 +111,59 @@ vc = VeeamClient(
 await vc.connect()
 ```
 
+#### Detect the API version an appliance serves
+
+The REST API has no endpoint that reports its supported versions, and nothing negotiates one
+for you — the version is part of every path, so a client picks one up front. That path is
+also what makes detection possible: `/api/v{version}/system/about` requires a token, so an
+anonymous probe gets 401 where the version is served and 404 where it is not.
+`detect_api_version` returns the newest version that both the appliance serves and this
+library can speak:
+
+```python
+import asyncio
+from veeam_az import VeeamClient
+from veeam_az.discovery import detect_api_version
+
+async def main():
+    base_url = "https://vbaz.example.com"
+
+    api_version = await detect_api_version(base_url, verify_ssl=False)
+    if api_version is None:
+        # The appliance may be unreachable or behind a proxy — choose your own default
+        api_version = "8.1"
+
+    vc = VeeamClient(
+        host=base_url,
+        username="administrator",
+        password="SuperSecretPassword",
+        api_version=api_version,
+        verify_ssl=False,
+    )
+    await vc.connect()
+
+asyncio.run(main())
+```
+
+Detection needs no credentials, so it can run before you have any. Probes are concurrent, so
+it costs roughly one round trip regardless of how many versions this library supports.
+
+If the appliance is not on the usual HTTPS port, `detect_rest_api` finds the port and the
+version at once:
+
+```python
+from veeam_az.discovery import detect_rest_api
+
+endpoint = await detect_rest_api("vbaz.example.com", ports=(443, 8443), verify_ssl=False)
+if endpoint:
+    print(endpoint.port, endpoint.api_version)  # e.g. 443 8.1
+    base_url = f"https://vbaz.example.com{endpoint.base_url_suffix}"
+```
+
+Resolve it once and store the result rather than detecting on every start: an appliance
+upgrade would otherwise silently move you onto a newer version, and versions rename enum
+values and add required fields.
+
 #### Call an API endpoint (async)
 ```python
 policies = await vc.call(
