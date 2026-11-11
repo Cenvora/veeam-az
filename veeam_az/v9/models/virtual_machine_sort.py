@@ -1,0 +1,41 @@
+from enum import Enum
+
+
+class VirtualMachineSort(str, Enum):
+    BACKUPPOLICYASC = "BackupPolicyAsc"
+    BACKUPPOLICYDESC = "BackupPolicyDesc"
+    DISKSIZEASC = "DiskSizeAsc"
+    DISKSIZEDESC = "DiskSizeDesc"
+    DNSNAMEASC = "DnsNameAsc"
+    DNSNAMEDESC = "DnsNameDesc"
+    IDASC = "IdAsc"
+    IDDESC = "IdDesc"
+    LASTBACKUPASC = "LastBackupAsc"
+    LASTBACKUPDESC = "LastBackupDesc"
+    NAMEASC = "NameAsc"
+    NAMEDESC = "NameDesc"
+    OSTYPEASC = "OsTypeAsc"
+    OSTYPEDESC = "OsTypeDesc"
+    PRIVATEIPASC = "PrivateIPAsc"
+    PRIVATEIPDESC = "PrivateIPDesc"
+    PUBLICIPASC = "PublicIPAsc"
+    PUBLICIPDESC = "PublicIPDesc"
+    REGIONASC = "RegionAsc"
+    REGIONDESC = "RegionDesc"
+    RESOURCEGROUPASC = "ResourceGroupAsc"
+    RESOURCEGROUPDESC = "ResourceGroupDesc"
+    RESTOREPOINTSASC = "RestorePointsAsc"
+    RESTOREPOINTSDESC = "RestorePointsDesc"
+    SIZEASC = "sizeAsc"
+    SIZEDESC = "sizeDesc"
+    SUBNETASC = "SubnetAsc"
+    SUBNETDESC = "SubnetDesc"
+    SUBSCRIPTIONASC = "SubscriptionAsc"
+    SUBSCRIPTIONDESC = "SubscriptionDesc"
+    TENANTIDASC = "TenantIdAsc"
+    TENANTIDDESC = "TenantIdDesc"
+    VIRTUALNETWORKASC = "VirtualNetworkAsc"
+    VIRTUALNETWORKDESC = "VirtualNetworkDesc"
+
+    def __str__(self) -> str:
+        return str(self.value)

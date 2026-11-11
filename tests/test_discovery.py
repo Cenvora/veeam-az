@@ -77,20 +77,20 @@ async def test_detects_the_version_the_appliance_serves():
 @pytest.mark.asyncio
 async def test_detects_the_newest_of_several():
     """An older appliance must not be handed a newer version."""
-    client, _ = make_client(served=["8.1"])
+    client, _ = make_client(served=["8"])
 
-    detected = await detect_api_version(BASE_URL, client=client, versions=["8.1", "9.0"])
+    detected = await detect_api_version(BASE_URL, client=client, versions=["8", "9"])
 
-    assert detected == "8.1"
+    assert detected == "8"
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("status", [200, 401, 403])
 async def test_any_routed_status_counts_as_served(status):
     """The question is whether the path routes, not whether the probe was allowed."""
-    client, _ = make_client(served=["8.1"], served_status=status)
+    client, _ = make_client(served=["8"], served_status=status)
 
-    assert await detect_api_version(BASE_URL, client=client) == "8.1"
+    assert await detect_api_version(BASE_URL, client=client) == "8"
 
 
 @pytest.mark.asyncio
@@ -133,15 +133,15 @@ async def test_a_single_failing_probe_does_not_hide_the_others():
     def handler(request):
         if request.url.path == "/api/v9.0/system/about":
             raise httpx.ReadTimeout("too slow")
-        if request.url.path == "/api/v8.1/system/about":
+        if request.url.path == "/api/v8/system/about":
             return httpx.Response(401)
         return httpx.Response(404)
 
     client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
 
-    detected = await detect_api_version(BASE_URL, client=client, versions=["9.0", "8.1"])
+    detected = await detect_api_version(BASE_URL, client=client, versions=["9", "8"])
 
-    assert detected == "8.1"
+    assert detected == "8"
 
 
 @pytest.mark.asyncio
@@ -206,17 +206,17 @@ def make_endpoint_client(served, fail_with=None):
 
 @pytest.mark.asyncio
 async def test_finds_the_default_port():
-    client, _ = make_endpoint_client([(443, "8.1")])
+    client, _ = make_endpoint_client([(443, "8")])
 
     endpoint = await detect_rest_api("vbaz.example.com", client=client)
 
-    assert endpoint == RestApiEndpoint(port=443, api_version="8.1")
+    assert endpoint == RestApiEndpoint(port=443, api_version="8")
 
 
 @pytest.mark.asyncio
 async def test_port_order_is_the_callers_choice():
     """A deployment behind a port-forwarding proxy can be anywhere."""
-    client, _ = make_endpoint_client([(443, "8.1"), (8443, "8.1")])
+    client, _ = make_endpoint_client([(443, "8"), (8443, "8")])
 
     endpoint = await detect_rest_api("vbaz.example.com", ports=(8443, 443), client=client)
 
@@ -228,14 +228,14 @@ async def test_probes_every_port_and_version_combination():
     client, requested = make_endpoint_client([])
 
     await detect_rest_api(
-        "vbaz.example.com", ports=(443, 8443), client=client, versions=["8.1", "9.0"]
+        "vbaz.example.com", ports=(443, 8443), client=client, versions=["8", "9"]
     )
 
     assert sorted(requested) == sorted(
         [
             (port, f"/api/v{version}/system/about")
             for port in (443, 8443)
-            for version in ("8.1", "9.0")
+            for version in ("8", "9")
         ]
     )
 
@@ -268,7 +268,7 @@ async def test_detected_endpoint_builds_a_working_base_url():
     """The result should drop straight into a VeeamClient host argument."""
     from veeam_az.client import VeeamClient
 
-    client, _ = make_endpoint_client([(443, "8.1")])
+    client, _ = make_endpoint_client([(443, "8")])
     endpoint = await detect_rest_api("vbaz.example.com", client=client)
 
     vc = VeeamClient(

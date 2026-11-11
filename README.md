@@ -13,7 +13,7 @@ Python package for interacting with the Veeam Backup for Azure REST API
 </h4>
 
 <!-- Summary -->
-This project is an independent, open source Python client for the Veeam Backup for Azure <a href="https://helpcenter.veeam.com/references/vbazure/8.1/rest/main/tag/SectionAbout/index.html">REST API</a>. It is not affiliated with, endorsed by, or sponsored by Veeam Software.
+This project is an independent, open source Python client for the Veeam Backup for Azure <a href="https://helpcenter.veeam.com/references/vbazure/9/rest/main/tag/SectionAbout/index.html">REST API</a>. It is not affiliated with, endorsed by, or sponsored by Veeam Software.
 <!-- Summary -->
 
 ## Supported Versions
@@ -28,17 +28,26 @@ This project is an independent, open source Python client for the Veeam Backup f
   </thead>
   <tbody>
     <tr>
-      <td>8.1</td>
-      <td>8.1</td>
+      <td>9.x</td>
+      <td>v9</td>
       <td style="text-align:center;">&#9989;</td>
     </tr>
     <tr>
-      <td>&lt; 8.1</td>
-      <td>&lt; 8.1</td>
+      <td>8.x (8.0, 8.1)</td>
+      <td>v8</td>
+      <td style="text-align:center;">&#9989;</td>
+    </tr>
+    <tr>
+      <td>&lt; 8</td>
+      <td>&lt; v8</td>
       <td style="text-align:center;">&#10060;</td>
     </tr>
   </tbody>
 </table>
+
+The API version is the version in the URL path (`/api/v8`, `/api/v9`), not the product
+version: VBA 8.1 appliances still serve `/api/v8`. `api_version="8.1"` and `"8.0"` are accepted
+as aliases for `"8"`. A `host` without a scheme gets `https://` prepended.
 
 ## How to support new API versions
 1. Download the OpenAPI schema into openapi_schemas
@@ -46,7 +55,7 @@ This project is an independent, open source Python client for the Veeam Backup f
 3. Run `python fix_openapi_schema.py .\openapi_schemas\vbaz_rest_{version}.json .\openapi_schemas\vbaz_rest_{version}_fixed.json` 
 4. Run `openapi-python-client generate --path ".\openapi_schemas\vbaz_rest_{version}_fixed.json" --output-path ".\veeam_az" --overwrite`
 5. Fix any warnings/errors
-6. Rename the folder to match the API version (i.e., `v8_1`)
+6. Rename the folder to match the API version (i.e., `v9`)
 7. Add the version mapping to versions.py
 8. Write pytest tests
 9. If an older API has been deprecated, delete its folder, json, and version.py entry, then update the supported versions section of the readme
@@ -85,7 +94,7 @@ async def main():
         host="https://vbaz.example.com",
         username="administrator",
         password="SuperSecretPassword",
-        api_version="8.1",
+        api_version="9",
         verify_ssl=False,
     )
 
@@ -105,7 +114,7 @@ refreshed automatically:
 vc = VeeamClient(
     host="https://vbaz.example.com",
     token="eyJhbGciOi...",
-    api_version="8.1",
+    api_version="9",
     verify_ssl=False,
 )
 await vc.connect()
@@ -131,7 +140,7 @@ async def main():
     api_version = await detect_api_version(base_url, verify_ssl=False)
     if api_version is None:
         # The appliance may be unreachable or behind a proxy — choose your own default
-        api_version = "8.1"
+        api_version = "8"
 
     vc = VeeamClient(
         host=base_url,
@@ -156,7 +165,7 @@ from veeam_az.discovery import detect_rest_api
 
 endpoint = await detect_rest_api("vbaz.example.com", ports=(443, 8443), verify_ssl=False)
 if endpoint:
-    print(endpoint.port, endpoint.api_version)  # e.g. 443 8.1
+    print(endpoint.port, endpoint.api_version)  # e.g. 443 9
     base_url = f"https://vbaz.example.com{endpoint.base_url_suffix}"
 ```
 
