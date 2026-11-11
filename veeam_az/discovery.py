@@ -4,7 +4,7 @@ The REST API has no endpoint that reports the set of versions an appliance suppo
 nothing negotiates it for the caller — the version is part of every path, so a client picks
 one up front and lives with it.
 
-That path is what makes detection possible without credentials. ``/api/v8.1/system/about``
+That path is what makes detection possible without credentials. ``/api/v9/system/about``
 requires a bearer token, so an anonymous probe distinguishes the two cases cleanly:
 
 * the appliance serves that version — routing matches and authentication rejects it: 401
@@ -136,7 +136,7 @@ async def detect_api_version(
         client: An existing httpx.AsyncClient to reuse instead of opening one.
 
     Returns:
-        A version string such as "8.1", or None if nothing answered — the caller should then
+        A version string such as "9", or None if nothing answered — the caller should then
         fall back to a version it chooses.
     """
     candidates = newest_first(VERSION_TO_PACKAGE if versions is None else versions)
